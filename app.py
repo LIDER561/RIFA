@@ -39,7 +39,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # --- Datos configurables de la rifa ---
 RIFA_CONFIG = {
-    "nombre": "Rifa Pro Fondos",
+    "nombre": "Rifa 'EL POBLAO ' ",
     "precio_numero": 20,           # Bs por número
     "cantidad_numeros": 100,       # del 00 al 99
     "fecha_sorteo": "2026-08-15",

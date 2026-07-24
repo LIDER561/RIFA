@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ config.nombre }}{% endblock %}
+{% block header_title %}{{ config.nombre }}{% endblock %}
+{% block header_sub %}Sorteo: {{ config.fecha_sorteo }} · Bs {{ config.precio_numero }} por número{% endblock %}
+
+{% block content %}
+<div class="card">
+    <p style="margin-top:0;">Elige tus números de la suerte. 🟢 disponible · ⚪ reservado · 🔴 ya pagado</p>
+
+    <form method="POST" action="{{ url_for('reservar') }}" id="form-compra">
+        <div id="grid" style="display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; margin-bottom:20px;">
+            {% for n in numeros %}
+                {% set num_str = "%02d"|format(n.numero) %}
+                <label style="
+                    text-align:center;
+                    padding:10px 0;
+                    border-radius:10px;
+                    font-weight:700;
+                    cursor: {{ 'not-allowed' if n.estado != 'disponible' else 'pointer' }};
+                    background: {{ '#22c55e33' if n.estado=='disponible' else ('#ef444433' if n.estado=='pagado' else '#9ca3af33') }};
+                    border: 2px solid {{ '#22c55e' if n.estado=='disponible' else ('#ef4444' if n.estado=='pagado' else '#9ca3af') }};
+                    display:block;
+                    user-select:none;
+                ">
+                    <input type="checkbox" name="numeros" value="{{ num_str }}"
+                        {% if n.estado != 'disponible' %}disabled{% endif %}
+                        style="display:none;" class="chk-numero">
+                    {{ num_str }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <div class="field">
+            <label>Tu nombre completo</label>
+            <input type="text" name="nombre" required placeholder="Ej: María Pérez">
+        </div>
+        <div class="field">
+            <label>Número de celular</label>
+            <input type="tel" name="celular" required placeholder="Ej: 71234567">
+        </div>
+
+        <p><strong>Total: Bs <span id="total">0</span></strong> (<span id="cantidad">0</span> número(s))</p>
+
+        <button type="submit">Reservar y continuar al pago</button>
+    </form>
+</div>
+
+<script>
+const precio = {{ config.precio_numero }};
+const checks = document.querySelectorAll('.chk-numero');
+const labels = document.querySelectorAll('#grid label');
+
+labels.forEach((label, i) => {
+    const chk = checks[i];
+    if (chk.disabled) return;
+    label.addEventListener('click', (e) => {
+        e.preventDefault();
+        chk.checked = !chk.checked;
+        label.style.outline = chk.checked ? '3px solid #4a26a8' : 'none';
+        actualizarTotal();
+    });
+});
+
+function actualizarTotal() {
+    const seleccionados = document.querySelectorAll('.chk-numero:checked').length;
+    document.getElementById('cantidad').innerText = seleccionados;
+    document.getElementById('total').innerText = seleccionados * precio;
+}
+</script>
+{% endblock %}

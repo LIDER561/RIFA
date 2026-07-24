@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Admin - Compras{% endblock %}
+{% block header_title %}Panel de administrador{% endblock %}
+{% block header_sub %}Confirma o rechaza los pagos recibidos{% endblock %}
+
+{% block content %}
+<p style="text-align:right;"><a href="{{ url_for('admin_logout') }}">Cerrar sesión</a></p>
+
+{% for c in compras %}
+<div class="card">
+    <p><strong>#{{ c.id }} — {{ c.nombre }}</strong> ({{ c.celular }})</p>
+    <p>Números: {{ c.numeros }} · Monto: Bs {{ c.monto }}</p>
+    <p>Estado:
+        <strong style="color: {{ 'green' if c.estado=='confirmado' else ('red' if c.estado in ['rechazado','expirado'] else 'orange') }}">
+            {{ c.estado }}
+        </strong>
+    </p>
+    {% if c.comprobante %}
+        <p><a href="{{ url_for('static', filename='uploads/' ~ c.comprobante) }}" target="_blank">Ver comprobante subido</a></p>
+    {% else %}
+        <p><em>Sin comprobante subido aún</em></p>
+    {% endif %}
+
+    {% if c.estado == 'pendiente' %}
+        <a href="{{ url_for('admin_confirmar', compra_id=c.id) }}" class="btn" style="background:#22c55e;">Confirmar pago</a>
+        <a href="{{ url_for('admin_rechazar', compra_id=c.id) }}" class="btn" style="background:#ef4444;">Rechazar</a>
+    {% endif %}
+</div>
+{% else %}
+<p>No hay compras registradas todavía.</p>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Pagar tu reserva{% endblock %}
+{% block header_title %}Completa tu pago{% endblock %}
+{% block header_sub %}Tienes 15 minutos para pagar y subir tu comprobante{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3 style="margin-top:0;">Resumen de tu compra</h3>
+    <p><strong>Números:</strong> {{ compra.numeros }}</p>
+    <p><strong>Monto a pagar:</strong> Bs {{ compra.monto }}</p>
+    <p><strong>Nombre:</strong> {{ compra.nombre }}</p>
+</div>
+
+<div class="card" style="text-align:center;">
+    <h3>Escanea el QR para pagar</h3>
+    <div id="qrcode" style="display:flex; justify-content:center; margin:16px 0;"></div>
+    <p style="font-size:0.9rem; color:#4b5563;">
+        Banco: {{ config.banco }}<br>
+        Titular: {{ config.titular }}<br>
+        Cuenta: {{ config.cuenta }}
+    </p>
+</div>
+
+<div class="card">
+    <h3 style="margin-top:0;">Sube tu comprobante</h3>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="field">
+            <label>Foto o captura del comprobante de pago</label>
+            <input type="file" name="comprobante" accept="image/*,.pdf" required>
+        </div>
+        <button type="submit">Enviar comprobante</button>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    // El texto codificado en el QR: normalmente el alias/cuenta de pago QR interoperable de tu banco.
+    const textoQR = "{{ config.alias_qr }} - Monto: Bs {{ compra.monto }} - Ref: RIFA-{{ compra.id }}";
+    new QRCode(document.getElementById("qrcode"), {
+        text: textoQR,
+        width: 200,
+        height: 200
+    });
+</script>
+{% endblock %}

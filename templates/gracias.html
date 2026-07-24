@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}¡Gracias!{% endblock %}
+{% block header_title %}¡Gracias por tu compra!{% endblock %}
+{% block header_sub %}Estamos verificando tu pago{% endblock %}
+
+{% block content %}
+<div class="card">
+    <p>Hemos recibido tu comprobante para los números: <strong>{{ compra.numeros }}</strong></p>
+    <p>Estado actual: <strong>{{ compra.estado }}</strong></p>
+    <p>Te confirmaremos por celular ({{ compra.celular }}) apenas verifiquemos el pago.</p>
+    <a href="{{ url_for('index') }}" class="btn">Volver al inicio</a>
+</div>
+{% endblock %}
